@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mystudy.mapper.NoteTypeMapper">
+
+    <select id="queryRows" resultType="mystudy.po.NoteType">
+        select typeId,typeName,userId from tb_note_type where userId = #{userId}
+    </select>
+
+    <select id="findNoteCountByTypeId" resultType="java.lang.Long">
+        select count(*) from tb_note where typeId = #{typeId}
+    </select>
+
+    <delete id="deleteTypeById">
+        delete from tb_note_type where typeId = #{typeId}
+    </delete>
+
+    <select id="checkTypeName" resultType="mystudy.po.NoteType">
+        select * from tb_note_type where userId = #{userId} and typeName = #{typeName}
+    </select>
+
+<!--    <insert id="addType" useGeneratedKeys="true" keyProperty="typeId">-->
+<!--        insert into tb_note_type(typeName, userId) values (#{typeName}, #{userId})-->
+<!--    </insert>-->
+    <insert id="addType" useGeneratedKeys="true" keyProperty="typeId" parameterType="mystudy.po.NoteType">
+        insert into tb_note_type(typeName, userId) values (#{typeName}, #{userId})
+    </insert>
+
+    <update id="updateType">
+        update tb_note_type set typeName = #{typeName} where typeId = #{typeId}
+    </update>
+</mapper>

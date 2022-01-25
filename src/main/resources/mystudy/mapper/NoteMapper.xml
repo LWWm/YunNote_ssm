@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mystudy.mapper.NoteMapper">
+
+    <sql id="where_title_date_typeId">
+        <where>
+            <if test="title != null ">
+                and title like concat('%', #{title}, '%')
+            </if>
+            <if test="date != null">
+                and DATE_FORMAT(pubTime, '%Y年%m月') = #{date}
+            </if>
+            <if test="typeId != null">
+                and n.typeId = #{typeId}
+            </if>
+            <if test="1 == 1">
+                and userId=#{userId}
+            </if>
+        </where>
+    </sql>
+    
+    <select id="findNoteCount" resultType="java.lang.Long">
+        select count(*) from tb_note n inner join tb_note_type t on n.typeId = t.typeId
+        <include refid="where_title_date_typeId"></include>
+    </select>
+
+    <select id="findNoteListByPage" resultType="mystudy.po.Note">
+        SELECT noteId, title, pubTime FROM tb_note n INNER JOIN tb_note_type t ON n.typeId = t.typeId
+        <include refid="where_title_date_typeId"></include>
+        order by pubTime desc limit #{index},#{pageSize}
+    </select>
+
+    <select id="findNoteCountByDate" resultType="mystudy.vo.NoteVo" >
+        select count(*) noteCount,DATE_FORMAT(pubTime,'%Y年%m月') groupName from tb_note n inner join tb_note_type t
+            on n.typeId = t.typeId where userId = #{userId} GROUP BY DATE_FORMAT(pubTime,'%Y年%m月')
+        order by DATE_FORMAT(pubTime, '%Y年%m月') DESC
+    </select>
+
+    <select id="findNoteCountByType" resultType="mystudy.vo.NoteVo">
+        select count(noteId) noteCount, t.typeId, typeName groupName from tb_note n right join tb_note_type t
+                on n.typeId = t.typeId where userId = #{userId} group by t.typeId order by count(noteId) desc
+    </select>
+
+    <select id="findNoteById" resultType="mystudy.po.Note">
+        select noteId, title, content, pubTime, typeName, n.typeId from tb_note n INNER JOIN tb_note_type t ON n.typeId = t.typeId where noteId = #{noteId}
+    </select>
+
+    <select id="findTypeListByUserId" resultType="mystudy.po.NoteType">
+        select typeId,typeName,userId from tb_note_type where userId = #{userId}
+    </select>
+    
+    <insert id="insertNote" parameterType="mystudy.po.Note">
+        insert into tb_note (typeId, title, content, pubTime, lon, lat) values(#{typeId}, #{title}, #{content}, now(), #{lon}, #{lat})
+    </insert>
+
+    <update id="updateNote" parameterType="mystudy.po.Note">
+        update tb_note set typeId = #{typeId}, title = #{title}, content = #{content} where noteId = #{noteId}
+    </update>
+
+    <delete id="deleteNoteById">
+        delete from tb_note where noteId = #{noteId}
+    </delete>
+
+    <select id="queryNoteList" resultType="mystudy.po.Note">
+        select lon, lat from tb_note n inner join tb_note_type t on n.typeId = t.typeId where userId = #{userId}
+    </select>
+</mapper>
