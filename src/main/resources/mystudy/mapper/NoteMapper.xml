@@ -26,10 +26,9 @@
         <include refid="where_title_date_typeId"></include>
     </select>
 
-    <select id="findNoteListByPage" resultType="mystudy.po.Note">
+    <select id="findNoteListOnPage" resultType="mystudy.po.Note">
         SELECT noteId, title, pubTime FROM tb_note n INNER JOIN tb_note_type t ON n.typeId = t.typeId
-        <include refid="where_title_date_typeId"></include>
-        order by pubTime desc limit #{index},#{pageSize}
+        <include refid="where_title_date_typeId"></include> order by pubTime
     </select>
 
     <select id="findNoteCountByDate" resultType="mystudy.vo.NoteVo" >

@@ -1,5 +1,6 @@
 package mystudy.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import mystudy.mapper.NoteMapper;
 import mystudy.po.Note;
 import mystudy.po.NoteType;
@@ -44,9 +45,11 @@ public class NoteServiceImpl implements NoteService {
 
 		Page<Note> page = new Page<Note>(pageNum, pageSize, count);
 
-		Integer index = (pageNum - 1) * pageSize;
+		// Integer index = (pageNum - 1) * pageSize;
 
-		List<Note> noteList = noteMapper.findNoteListByPage(userId, index, pageSize, title, date, typeId); // 【难点hmf】
+		PageHelper.startPage(pageNum,pageSize);
+		List<Note> noteList = noteMapper.findNoteListOnPage(userId,title,date,typeId);
+		// List<Note> noteList = noteMapper.findNoteListByPage(userId, index, pageSize, title, date, typeId); // 【难点hmf】
 
 		page.setDataList(noteList);
 

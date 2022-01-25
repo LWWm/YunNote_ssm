@@ -16,6 +16,9 @@ public interface NoteMapper {
 								  @Param("pageSize") Integer pageSize, @Param("title") String title,
 								  @Param("date") String date, @Param("typeId") String typeId);
 
+	List<Note> findNoteListOnPage(@Param("userId") Integer userId, @Param("title") String title,
+								  @Param("date") String date, @Param("typeId") String typeId);
+
 	List<NoteVo> findNoteCountByDate(Integer userId);
 
 	List<NoteVo> findNoteCountByType(Integer userId);
